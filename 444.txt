@@ -1,0 +1,71 @@
+import java.util.*;
+
+public class Berkley {
+
+    // Simulated machine class
+    static class Machine {
+        int id;
+        int clockTime; // Clock time in seconds (could be represented differently)
+        int timeDifference;
+
+        Machine(int id, int clockTime) {
+            this.id = id;
+            this.clockTime = clockTime;
+        }
+
+        void adjustClock(int offset) {
+            clockTime += offset;
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Read number of machines (excluding master)
+        System.out.print("Enter number of slave machines: ");
+        int n = scanner.nextInt();
+
+        // Create list of all machines including the master
+        List<Machine> machines = new ArrayList<>();
+
+        // Add master machine
+        System.out.print("Enter master clock time: ");
+        int masterTime = scanner.nextInt();
+        Machine master = new Machine(0, masterTime);
+        machines.add(master);
+
+        // Add slave machines
+        for (int i = 1; i <= n; i++) {
+            System.out.print("Enter clock time of machine " + i + ": ");
+            int time = scanner.nextInt();
+            machines.add(new Machine(i, time));
+        }
+
+        // Step 1: Master polls all slave clocks and gets time differences
+        int totalDiff = 0;
+        System.out.println("\nCalculating time differences from master...");
+        for (int i = 1; i <= n; i++) {
+            Machine m = machines.get(i);
+            m.timeDifference = m.clockTime - master.clockTime;
+            totalDiff += m.timeDifference;
+            System.out.println("Machine " + m.id + " time difference: " + m.timeDifference);
+        }
+
+        // Add master's own time difference (0)
+        totalDiff += 0; // master.timeDifference = 0
+
+        // Step 2: Calculate average difference (excluding faulty machines if needed)
+        int averageDiff = totalDiff / (n + 1);
+        System.out.println("\nAverage time difference: " + averageDiff);
+
+        // Step 3: Adjust all clocks based on average
+        System.out.println("\nAdjusting clocks...");
+        for (int i = 0; i <= n; i++) {
+            Machine m = machines.get(i);
+            m.adjustClock(-m.timeDifference + averageDiff); // Offset = average - actual diff
+            System.out.println("Machine " + m.id + " new clock time: " + m.clockTime);
+        }
+
+        scanner.close();
+    }
+}

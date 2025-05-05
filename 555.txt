@@ -1,0 +1,53 @@
+import java.util.Scanner;
+
+class Tring {
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+
+        // Get number of nodes in the ring
+        System.out.print("Enter the number of nodes: ");
+        int n = sc.nextInt();
+
+        int token = 0;  // The current node holding the token
+
+        // Display the ring structure (0 -> 1 -> ... -> n-1 -> 0)
+        for (int i = 0; i < n; i++)
+            System.out.print(" " + i);
+        System.out.println(" " + 0);
+
+        try {
+            while (true) {  // Continuous operation until user interrupts
+                // Get sender, receiver, and data from user
+                System.out.print("Enter sender: ");
+                int s = sc.nextInt();
+                System.out.print("Enter receiver: ");
+                int r = sc.nextInt();
+                System.out.print("Enter Data: ");
+                String d = sc.next();
+
+                // Show token passing from current holder to sender
+                System.out.print("Token passing:");
+                for (int i = token, j = token; (i % n) != s; i++, j = (j + 1) % n) {
+                    System.out.print(" " + j + "->");
+                }
+                System.out.println(" " + s);
+
+                // Sender transmits data
+                System.out.println("Sender " + s + " sending data: " + d);
+
+                // Data travels through the ring from sender to receiver
+                for (int i = (s + 1) % n; i != r; i = (i + 1) % n) {
+                    System.out.println("Data " + d + " forwarded by " + i);
+                }
+                
+                // Receiver gets the data
+                System.out.println("Receiver " + r + " received data: " + d);
+                
+                // Token is now with the sender (who just transmitted)
+                token = s;
+            }
+        } catch (Exception e) {
+            System.out.println("Error occurred: " + e.getMessage());
+        }
+    }
+}
